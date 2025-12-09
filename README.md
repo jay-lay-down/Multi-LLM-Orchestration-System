@@ -59,14 +59,4 @@ Update that line to explore different discussion prompts.
 ```
 
 ## 📄 License
-This project is distributed under the [Apache License 2.0](LICENSE).
-
-**What it means in practice**
-- You can **use, modify, and redistribute** the code in personal or commercial projects.
-- The license includes an explicit **patent license** from contributors.
-- When you redistribute, include the LICENSE file (and a NOTICE file if you add one) and **state any modifications** you made.
-- The software is provided **"AS IS" without warranties**, so assess fitness for your use case.
-
-**How Apache 2.0 differs from MIT (in brief)**
-- Apache 2.0 adds the patent license and explicit termination if you bring patent claims involving the project.
-- It requires keeping notices and marking modified files, whereas MIT is more minimal.
+The project is released under the [Apache License 2.0](LICENSE).
