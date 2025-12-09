@@ -43,7 +43,7 @@ class MultiModelAgent:
         
         try:
             # -------------------------------------------------
-            # CASE 1: OpenAI (GPT-4o) - 논리/분석 담당
+            # CASE 1: OpenAI 
             # -------------------------------------------------
             if self.provider == "openai":
                 messages = [{"role": "system", "content": self.system_prompt}]
@@ -58,7 +58,7 @@ class MultiModelAgent:
                 return response.choices[0].message.content
 
             # -------------------------------------------------
-            # CASE 2: Anthropic (Claude 3.5) - 감성/뉘앙스/고객 담당
+            # CASE 2: Anthropic 
             # -------------------------------------------------
             elif self.provider == "anthropic":
                 # 클로드는 시스템 프롬프트가 파라미터로 따로 빠짐
@@ -73,7 +73,7 @@ class MultiModelAgent:
                 return response.content[0].text
 
             # -------------------------------------------------
-            # CASE 3: Google (Gemini) - 창의성/중재 담당
+            # CASE 3: Gemini
             # -------------------------------------------------
             elif self.provider == "google":
                 model = genai.GenerativeModel(self.model_name)
@@ -86,35 +86,10 @@ class MultiModelAgent:
             return f"❌ [Error] {self.provider} 호출 실패: {str(e)}"
 
 # =========================================================
-# 2. 어벤져스 팀 구성 (페르소나 + 최적 모델 매칭)
+# 2. 어벤져스 팀 구성 (페르소나)
 # =========================================================
 
-# 1. 통계학자 (GPT-4o): 논리적이고 딱딱한 계산은 GPT가 최고
-statistician = MultiModelAgent(
-    name="김박사(통계학자)",
-    provider="openai",
-    model_name="gpt-4o",
-    role_desc="30년 경력의 보수적인 통계학자. 데이터 없는 주장은 혐오함.",
-    style_desc="냉소적임. '유의미한가?', 'p-value는?' 같은 용어 사용."
-)
-
-# 2. 클라이언트 (Claude 3.5 Sonnet): 사람 같은 자연스러움과 '갑질' 뉘앙스는 클로드가 잘함
-client = MultiModelAgent(
-    name="최상무(클라이언트)",
-    provider="anthropic",
-    model_name="claude-3-5-sonnet-20240620",
-    role_desc="성격 급한 마케팅 임원. 어려운 말 싫어하고 매출과 임팩트만 중요함.",
-    style_desc="감정적이고 직설적임. '그래서 돈이 됩니까?', '확 와닿지가 않네' 등 사용."
-)
-
-# 3. PM/아이디어 (Gemini 1.5 Pro): 긴 문맥 이해와 중재, 창의적 제안은 제미나이
-pm = MultiModelAgent(
-    name="이PM(사회자)",
-    provider="google",
-    model_name="gemini-1.5-pro",
-    role_desc="프로젝트 매니저. 두 사람 사이를 중재하고 현실적인 절충안을 제시함.",
-    style_desc="부드럽고 정리하는 말투. '두 분 말씀의 핵심은...', '그럼 이렇게 하시죠' 사용."
-)
+# 페르소나에 따라 각자 봇에 역할 부여
 
 # =========================================================
 # 3. 좌담회 실행 루프
