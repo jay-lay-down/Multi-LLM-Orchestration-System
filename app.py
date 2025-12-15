@@ -1,15 +1,33 @@
-import openai
-import google.generativeai as genai
-import anthropic
-import time
 import os
+import time
+
+import anthropic
+import google.generativeai as genai
+import openai
+from dotenv import load_dotenv
 
 # =========================================================
-# [설정] API 키 입력 (깃허브 올릴 땐 필히 환경변수 처리!)
+# [설정] API 키 입력 (반드시 환경변수로 관리하세요!)
 # =========================================================
-OPENAI_API_KEY = "sk-..."       # GPT용
-GEMINI_API_KEY = "AIza..."      # 제미나이용
-CLAUDE_API_KEY = "sk-ant-..."   # 클로드용
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")
+
+if not (OPENAI_API_KEY and GEMINI_API_KEY and CLAUDE_API_KEY):
+    missing = [
+        name for name, value in (
+            ("OPENAI_API_KEY", OPENAI_API_KEY),
+            ("GEMINI_API_KEY", GEMINI_API_KEY),
+            ("CLAUDE_API_KEY", CLAUDE_API_KEY),
+        )
+        if not value
+    ]
+    raise EnvironmentError(
+        "필수 API 키가 누락되었습니다. .env 혹은 환경변수에 다음 키를 설정하세요: "
+        + ", ".join(missing)
+    )
 
 # 라이브러리 초기화
 openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
@@ -88,8 +106,29 @@ class MultiModelAgent:
 # =========================================================
 # 2. 어벤져스 팀 구성 (페르소나)
 # =========================================================
+statistician = MultiModelAgent(
+    name="Statistician",
+    provider="openai",
+    model_name="gpt-4o-mini",
+    role_desc="통계학자 / 데이터 분석가로서 객관적 근거를 제시합니다.",
+    style_desc="간결하고 분석적인 톤으로 3문장 이내로 답변합니다.",
+)
 
-# 페르소나에 따라 각자 봇에 역할 부여
+client = MultiModelAgent(
+    name="Client",
+    provider="anthropic",
+    model_name="claude-3-5-sonnet-20240620",
+    role_desc="프로덕트의 클라이언트이자 최종 의사결정권자입니다. 비즈니스 임팩트와 리스크에 예민합니다.",
+    style_desc="현실적이고 직설적인 질문을 던지되, 감정적인 반응을 살짝 담아냅니다.",
+)
+
+pm = MultiModelAgent(
+    name="Project Manager",
+    provider="google",
+    model_name="gemini-1.5-pro",
+    role_desc="프로젝트 매니저로서 두 관점을 조율하고 실행 플랜을 제안합니다.",
+    style_desc="중재자 역할로, 구체적인 액션 아이템을 제안합니다.",
+)
 
 # =========================================================
 # 3. 좌담회 실행 루프
